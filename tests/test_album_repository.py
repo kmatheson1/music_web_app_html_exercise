@@ -21,8 +21,7 @@ def test_all(db_connection):
 When I call AlbumRepository#create albums
 A new album is added to list of albums
 """
-
-def test_all(db_connection):
+def test_create(db_connection):
     db_connection.seed("seeds/record_store.sql")
     repository = AlbumRepository(db_connection)
     album = Album(None, 'New Album', 9999, 3)
@@ -35,3 +34,13 @@ def test_all(db_connection):
         Album(5, 'By the Way', 2002, 1),
         Album(6, 'New Album', 9999, 3)
     ]
+
+"""
+When I call AlbumRepository#find album
+The album with corresponding id is returned
+"""
+def test_find(db_connection):
+    db_connection.seed("seeds/record_store.sql")
+    repository = AlbumRepository(db_connection)
+    assert repository.find(1) == Album(1, 'Californication',1999, 1)
+    

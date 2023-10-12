@@ -18,6 +18,15 @@ def get_albums():
     albums = repository.all()
     return render_template("albums/index.html", albums=albums)
 
+@app.route('/albums/<id>')
+def get_album(id):
+    connection = get_flask_database_connection(app)
+    repository = AlbumRepository(connection)
+    album = repository.find(id)
+    return render_template("albums/album.html", album=album)
+
+
+
 # @app.route('/albums', methods=['POST'])
 # def post_album():
 #     if has_invalid_album_parameters(request.form):
