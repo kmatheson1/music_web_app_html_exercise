@@ -14,6 +14,11 @@ def test_all(db_connection):
         Artist(3, 'Pearl Jam', 'Grunge')
     ]
 
+def test_find(db_connection):
+    db_connection.seed("seeds/record_store.sql")
+    repository = ArtistRepository(db_connection)
+    assert repository.find(1) == Artist(1, 'Red Hot Chili Peppers', 'Rock')
+
 """
 When ArtistRepsoitory#create is called
 A new artist is added to the list of artist objects

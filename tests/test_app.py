@@ -42,3 +42,29 @@ def test_visit_album_show_page_and_go_back(page, test_web_address, db_connection
     h1_tag = page.locator("h1")
     expect(h1_tag).to_have_text("Albums")
 
+def test_get_artists(page, test_web_address, db_connection):
+    db_connection.seed("seeds/record_store.sql")
+    page.goto(f"http://{test_web_address}/artists")
+    list_tags = page.locator("li")
+    expect(list_tags).to_have_text([
+        "Red Hot Chili Peppers",
+        "Nirvana",
+        "Pearl Jam",
+    ])
+
+def test_get_artist_show_page(page, test_web_address, db_connection):
+    db_connection.seed("seeds/record_store.sql")
+    page.goto(f"http://{test_web_address}/artists")
+    page.click("text='Red Hot Chili Peppers'")
+    h1_tag = page.locator("h1")
+    genre_tag = page.locator(".t-genre")
+    expect(h1_tag).to_have_text("Artist: Red Hot Chili Peppers")
+    expect(genre_tag).to_have_text("Genre: Rock")
+
+def test_visit_album_show_page_and_go_back(page, test_web_address, db_connection):
+    db_connection.seed("seeds/record_store.sql")
+    page.goto(f"http://{test_web_address}/artists")
+    page.click("text='Red Hot Chili Peppers'")
+    page.click("text='Go back to artist list'")
+    h1_tag = page.locator("h1")
+    expect(h1_tag).to_have_text("Artists")
