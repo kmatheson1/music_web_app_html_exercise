@@ -97,3 +97,32 @@ def test_validate_album(page, test_web_address, db_connection):
         "Title must not be blank, " \
         "Release year must be a number"
     )
+
+def test_create_artist(page, test_web_address, db_connection):
+    page.set_default_timeout(1000)
+    db_connection.seed("seeds/record_store.sql")
+    page.goto(f"http://{test_web_address}/artists")
+    page.click("text='Add a new artist'")
+
+    page.fill("input[name='name']", "Test Artist")
+    page.fill("input[name='genre']", "Test Genre")
+    page.click('text ="Add artist"')
+
+    h1_tag = page.locator("h1")
+    release_year_tag = page.locator(".t-genre")
+    expect(h1_tag).to_have_text("Artist: Test Artist")
+    expect(release_year_tag).to_have_text("Genre: Test Genre")
+
+def test_validate_album(page, test_web_address, db_connection):
+    page.set_default_timeout(1000)
+    db_connection.seed("seeds/record_store.sql")
+    page.goto(f"http://{test_web_address}/artists")
+    page.click('text="Add a new artist"')
+    page.click('text="Add artist"')
+
+    errors_tag = page.locator(".t-errors")
+    expect(errors_tag).to_have_text(
+        "Your submission contains errors: " \
+        "Name must not be blank, " \
+        "Genre must not be blank"
+    )

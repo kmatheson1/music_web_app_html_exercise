@@ -14,7 +14,9 @@ class ArtistRepository():
         return Artist(row['id'], row['name'], row['genre'])
 
     def create(self, artist):
-        self._connection.execute('INSERT INTO artists (name, genre)' \
-                                'VALUES (%s, %s)'
+        rows = self._connection.execute('INSERT INTO artists (name, genre)' \
+                                'VALUES (%s, %s) RETURNING id'
                                 , [artist.name, artist.genre])
+        row = rows[0]
+        artist.id = row['id']
         return None

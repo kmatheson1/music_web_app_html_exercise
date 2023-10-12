@@ -29,6 +29,7 @@ def test_create(db_connection):
     repository = ArtistRepository(db_connection)
     new_artist = Artist(None, 'Test Artist', 'Test Genre')
     repository.create(new_artist)
+    assert new_artist.id == 4
     assert repository.all() == [
         Artist(1, 'Red Hot Chili Peppers', 'Rock'),
         Artist(2, 'Nirvana', 'Grunge'),
