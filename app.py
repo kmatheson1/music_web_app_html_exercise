@@ -1,10 +1,11 @@
 import os
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 from lib.database_connection import get_flask_database_connection
 from lib.album_repository import AlbumRepository
 from lib.artist_repository import ArtistRepository
 from lib.album import Album
 from lib.artist import Artist
+from lib.album_parameters_validator import AlbumParametersValidator
 
 # Create a new Flask app
 app = Flask(__name__)
@@ -39,6 +40,32 @@ def get_artist(id):
     artist = repository.find(1)
     return render_template("artists/artist.html", artist=artist)
 
+@app.route('/albums/new')
+def get_album_new():
+    return render_template("albums/new.html")
+
+@app.route('/albums', methods=["POST"])
+def create_album():
+    connection = get_flask_database_connection(app)
+    repository = AlbumRepository(connection)
+
+    validator = AlbumParametersValidator(
+        request.form['title'],
+        request.form['release_year']
+    )
+
+    if not validator.is_valid():
+        errors = validator.generate_errors()
+        return render_template("albums/new.html", errors=errors)
+    
+    album = Album(
+        None,
+        validator.get_valid_title(),
+        validator.get_valid_year(),
+        1)
+
+    repository.create(album)
+    return redirect(f'/albums/{album.id}')
 
 # @app.route('/albums', methods=['POST'])
 # def post_album():

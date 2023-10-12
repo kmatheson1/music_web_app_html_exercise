@@ -68,3 +68,32 @@ def test_visit_album_show_page_and_go_back(page, test_web_address, db_connection
     page.click("text='Go back to artist list'")
     h1_tag = page.locator("h1")
     expect(h1_tag).to_have_text("Artists")
+
+def test_create_album(page, test_web_address, db_connection):
+    page.set_default_timeout(1000)
+    db_connection.seed("seeds/record_store.sql")
+    page.goto(f"http://{test_web_address}/albums")
+    page.click("text='Add a new album'")
+
+    page.fill("input[name='title']", "Test Album")
+    page.fill("input[name='release_year']", "9999")
+    page.click('text ="Add album"')
+
+    h1_tag = page.locator("h1")
+    release_year_tag = page.locator(".t-release-year")
+    expect(h1_tag).to_have_text("Album: Test Album")
+    expect(release_year_tag).to_have_text("Released: 9999")
+
+def test_validate_album(page, test_web_address, db_connection):
+    page.set_default_timeout(1000)
+    db_connection.seed("seeds/record_store.sql")
+    page.goto(f"http://{test_web_address}/albums")
+    page.click('text="Add a new album"')
+    page.click('text="Add album"')
+
+    errors_tag = page.locator(".t-errors")
+    expect(errors_tag).to_have_text(
+        "Your submission contains errors: " \
+        "Title must not be blank, " \
+        "Release year must be a number"
+    )

@@ -26,6 +26,7 @@ def test_create(db_connection):
     repository = AlbumRepository(db_connection)
     album = Album(None, 'New Album', 9999, 3)
     repository.create(album)
+    assert album.id == 6
     assert repository.all() == [
         Album(1, 'Californication',1999, 1),
         Album(2, 'Nevermind', 1991, 2),
@@ -43,4 +44,3 @@ def test_find(db_connection):
     db_connection.seed("seeds/record_store.sql")
     repository = AlbumRepository(db_connection)
     assert repository.find(1) == Album(1, 'Californication',1999, 1)
-    
